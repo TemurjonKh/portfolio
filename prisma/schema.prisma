@@ -1,0 +1,245 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Neon (Vercel Storage) sets both. Locally, set DATABASE_URL_UNPOOLED to the same value as DATABASE_URL.
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model AdminUser {
+  id           String               @id @default(cuid())
+  email        String               @unique
+  passwordHash String
+  sessions     Session[]
+  resetTokens  PasswordResetToken[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+}
+
+model Session {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, expiresAt])
+}
+
+model RateLimit {
+  key         String   @id
+  count       Int      @default(0)
+  windowStart DateTime
+  updatedAt   DateTime @updatedAt
+}
+
+model Profile {
+  id           String      @id @default("singleton")
+  name         String
+  tagline      String
+  aboutText    String
+  photoUrl     String?
+  email        String
+  githubUrl    String?
+  linkedinUrl  String?
+  instagramUrl String?
+  kaggleUrl    String?
+  resumeUrl    String?
+  quickFacts   QuickFact[]
+  updatedAt    DateTime    @updatedAt
+}
+
+model QuickFact {
+  id        String  @id @default(cuid())
+  label     String
+  value     String
+  order     Int     @default(0)
+  profileId String  @default("singleton")
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@index([profileId, order])
+}
+
+model EducationEntry {
+  id             String   @id @default(cuid())
+  institution    String
+  degree         String
+  location       String?
+  startDate      DateTime
+  endDate        DateTime?
+  endDateLabel   String?
+  gpa            String?
+  courseworkJson String   @default("[]")
+  order          Int      @default(0)
+  updatedAt      DateTime @updatedAt
+
+  @@index([order])
+}
+
+model Project {
+  id              String         @id @default(cuid())
+  title           String
+  role            String?
+  dateLabel       String?
+  stackTagsJson   String         @default("[]")
+  descriptionJson String         @default("[]")
+  githubUrl       String?
+  demoUrl         String?
+  status          String?
+  /// "games" | "ai" | "sensing" | "systems": the shelf and star-chart constellation the project belongs to
+  track           String         @default("systems")
+  /// "public" shows everything; "teaser" shows only the title, status, teaser line and media
+  visibility      String         @default("public")
+  teaser          String?
+  /// JSON array of "label | value" lines, e.g. "Q-learning win rate | 98%"
+  metricsJson     String         @default("[]")
+  imageUrl        String?
+  images          ProjectImage[]
+  order           Int            @default(0)
+  updatedAt       DateTime       @updatedAt
+
+  @@index([order])
+}
+
+model ProjectImage {
+  id        String  @id @default(cuid())
+  url       String
+  alt       String?
+  order     Int     @default(0)
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, order])
+}
+
+model SkillGroup {
+  id        String   @id @default(cuid())
+  label     String
+  itemsJson String   @default("[]")
+  order     Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+model Certificate {
+  id        String   @id @default(cuid())
+  title     String
+  issuer    String
+  imageUrl  String?
+  order     Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  order       Int      @default(0)
+  updatedAt   DateTime @updatedAt
+
+  @@index([order])
+}
+
+model VolunteerExperience {
+  id          String    @id @default(cuid())
+  title       String
+  org         String?
+  dateLabel   String?
+  startDate   DateTime?
+  endDate     DateTime?
+  description String?
+  images      VolunteerImage[]
+  order       Int       @default(0)
+  updatedAt   DateTime  @updatedAt
+
+  @@index([order])
+}
+
+model VolunteerImage {
+  id          String              @id @default(cuid())
+  url         String
+  alt         String?
+  order       Int                 @default(0)
+  volunteerId String
+  volunteer   VolunteerExperience @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+
+  @@index([volunteerId, order])
+}
+
+model Activity {
+  id          String    @id @default(cuid())
+  title       String
+  org         String?
+  location    String?
+  dateLabel   String?
+  startDate   DateTime?
+  endDate     DateTime?
+  description String?
+  images      ActivityImage[]
+  order       Int       @default(0)
+  updatedAt   DateTime  @updatedAt
+
+  @@index([order])
+}
+
+model ActivityImage {
+  id         String   @id @default(cuid())
+  url        String
+  alt        String?
+  order      Int      @default(0)
+  activityId String
+  activity   Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@index([activityId, order])
+}
+
+model Interest {
+  id        String   @id @default(cuid())
+  label     String
+  imageUrl  String?
+  order     Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+model Language {
+  id        String   @id @default(cuid())
+  name      String
+  level     String
+  order     Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+model Attachment {
+  id        String   @id @default(cuid())
+  label     String
+  fileUrl   String?
+  category  String
+  order     Int      @default(0)
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
