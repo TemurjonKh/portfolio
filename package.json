@@ -4,39 +4,25 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit",
-    "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts",
-    "content:update": "tsx prisma/update-content.ts",
-    "vercel-build": "prisma generate && prisma db push --skip-generate && tsx prisma/seed.ts && next build"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@prisma/client": "^6.12.0",
-    "@vercel/blob": "^2.8.0",
-    "bcryptjs": "^3.0.2",
     "framer-motion": "^12.23.12",
     "geist": "^1.7.2",
     "next": "^16.3.5",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-icons": "^5.7.0",
-    "zod": "^4.1.5"
+    "react-icons": "^5.7.0"
   },
   "devDependencies": {
     "@types/node": "^22.18.1",
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.9",
     "autoprefixer": "^10.4.21",
-    "dotenv": "^17.2.2",
     "postcss": "^8.5.23",
-    "prisma": "^6.12.0",
     "tailwindcss": "^3.4.17",
-    "tsx": "^4.20.5",
     "typescript": "^5.9.2"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
   }
 }

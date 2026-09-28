@@ -1,9 +1,6 @@
-import { getPortfolioContent } from "@/lib/content";
 import { CosmosPortfolio } from "@/components/CosmosPortfolio";
+import { portfolioContent } from "@/lib/content";
 
-export const dynamic = "force-dynamic";
-
-export default async function HomePage() {
-  const content = await getPortfolioContent({ publicView: true }).catch(() => null);
-  return <CosmosPortfolio content={content} />;
+export default function HomePage() {
+  return <CosmosPortfolio content={portfolioContent} />;
 }

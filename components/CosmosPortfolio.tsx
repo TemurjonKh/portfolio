@@ -4,7 +4,6 @@ import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { CosmicBackground } from "@/components/CosmicBackground";
-import { ContactForm } from "@/components/ContactForm";
 import { FaGithub, FaInstagram, FaKaggle, FaLinkedinIn } from "react-icons/fa6";
 import { PiArrowDown, PiArrowUp, PiEnvelopeSimple, PiFilePdf } from "react-icons/pi";
 import { MediaCarousel } from "@/components/MediaCarousel";
@@ -341,9 +340,9 @@ export function CosmosPortfolio({ content }: { content: PortfolioContent | null 
               {profile.email && <li><PiEnvelopeSimple aria-hidden="true" /><a className="tk-link" href={"mailto:" + profile.email}>{profile.email}</a></li>}
               {profile.resumeUrl && <li><PiFilePdf aria-hidden="true" /><a className="tk-link" href={profile.resumeUrl} target="_blank" rel="noreferrer">Resume (PDF)</a></li>}
             </ul>
+            {profile.email && <p className="tk-contact__cta"><a className="tk-button tk-button--solid" href={"mailto:" + profile.email}><PiEnvelopeSimple aria-hidden="true" />Email me</a></p>}
             <div className="tk-contact__socials">{socialIcons}</div>
           </div>
-          <ContactForm />
         </div>
         <p className="tk-shell tk-colophon"><span>© {new Date().getFullYear()} {profile.name}</span><span>Incheon, South Korea</span></p>
       </footer>
